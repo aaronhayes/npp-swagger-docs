@@ -9,9 +9,9 @@ This repo constains a self hosted Swagger UI for the NPP API Framework.
 1. Clone this repo `git clone https://github.com/aaronhayes/npp-swagger-docs.git`
 2. Install dependencies `yarn install`
 3. Start Swagger UI Server `yarn start`
-4. Navigate to [Swagger Docs](http://localhost:7777)
+4. Navigate to [Swagger Docs](http://localhost:7777/docs)
 
 ## Links
 
-[New Payments Platform](https://www.nppa.com.au/)
-[NPP API Framework and Sandbox](https://www.nppa.com.au/the-platform/api-framework-and-sandbox/)
+- [New Payments Platform](https://www.nppa.com.au/)
+- [NPP API Framework and Sandbox](https://www.nppa.com.au/the-platform/api-framework-and-sandbox/)
