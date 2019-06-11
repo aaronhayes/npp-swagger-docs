@@ -1,0 +1,1896 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "SubmitPayment (pain.a09.001.02)\nGetPaymentStatus (pain.a10.001.02)\nGetAccountServicerByAlias (pain.a11.001.03)\nCancelPayment (camt.a09.001.01)\nReturnPayment (camt.a10.001.01)    \nPaymentEventDetails (camt.a11.001.01)",
+    "contact" : {
+      "name" : "NPP Australia",
+      "url" : "https://www.nppa.com.au",
+      "email" : "operations@nppa.com.au"
+    },
+    "version" : "1.0.2-oas3",
+    "title" : "ISO 20022 NPP API",
+    "license" : {
+      "name" : "MIT Licence",
+      "url" : "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags" : [ {
+    "name" : "REST API",
+    "description" : "NPP"
+  } ],
+  "paths" : {
+    "/payment/submit" : {
+      "post" : {
+        "operationId" : "submitPayment",
+        "description" : "Payment initiation request related to a single credit transfer between a debtor and creditor.",
+        "summary" : "Submit Payment.",
+        "tags" : [ "REST API" ],
+        "parameters" : [ {
+          "name" : "x-Correlation-Id",
+          "in" : "header",
+          "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers. Can be used for reporting and logging.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Success - Payment request resource created",
+            "headers" : {
+              "x-Correlation-Id" : {
+                "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentStatusResource"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "Not Acceptable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service Unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Bearer" : [ ]
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentSubmissionResource"
+              }
+            }
+          },
+          "description" : "Resource to instruct movement of funds from the debtor account to creditor. ",
+          "required" : true
+        }
+      }
+    },
+    "/payment/{transaction_identification}/status" : {
+      "get" : {
+        "operationId" : "getPaymentStatus",
+        "description" : "Request sent by a OSP (Overlay Service Provider) in order to get the status of a given transaction.",
+        "summary" : "Get Payment Status.",
+        "tags" : [ "REST API" ],
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "transaction_identification",
+          "description" : "Unique identification, as assigned by the first instructing agent, to unambiguously identify the transaction that is passed on, unchanged, throughout the entire interbank chain.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-Correlation-Id",
+          "in" : "header",
+          "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers. Can be used for reporting and logging.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Resource to report the status of a customer credit transfer.",
+            "headers" : {
+              "x-Correlation-Id" : {
+                "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentStatusResource"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "Not Acceptable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service Unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Bearer" : [ ]
+        } ]
+      }
+    },
+    "/accountServicer/alias" : {
+      "get" : {
+        "operationId" : "getAccountServicerByAlias",
+        "description" : "Request to get the account servicer details for a given alias.",
+        "summary" : "Get Account Servicer By Alias.",
+        "tags" : [ "REST API" ],
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "alias_type",
+          "description" : "Contains the type of Alias Identifier. E.g. an email, a phone number or an Australian\r\nBusiness Number.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ]
+          }
+        }, {
+          "in" : "query",
+          "name" : "alias_value",
+          "description" : "Contains the actual value for the supplied type, so an email address, a phone number etc.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "x-Correlation-Id",
+          "in" : "header",
+          "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers. Can be used for reporting and logging.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Resource containing all information for a particular Alias Identifier.",
+            "headers" : {
+              "x-Correlation-Id" : {
+                "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AccountAliasResource"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "Not Acceptable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service Unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Bearer" : [ ]
+        } ]
+      }
+    },
+    "/cancelPayment/submit" : {
+      "post" : {
+        "operationId" : "submitCancelPayment",
+        "description" : "This API allows a NPP Participant client (customer or Overlay Service Provider) to request the NPP Participant to return a previously submitted payment.",
+        "summary" : "Submit Cancel Payment.",
+        "tags" : [ "REST API" ],
+        "parameters" : [ {
+          "name" : "x-Correlation-Id",
+          "in" : "header",
+          "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers. Can be used for reporting and logging.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Success - Payment Cancellation request created",
+            "headers" : {
+              "x-Correlation-Id" : {
+                "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentCancellationResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "Not Acceptable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service Unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Bearer" : [ ]
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentCancellationRequest"
+              }
+            }
+          },
+          "description" : "HTTP request sent by the API Client. ",
+          "required" : true
+        }
+      }
+    },
+    "/returnPayment/submit" : {
+      "post" : {
+        "operationId" : "submitReturnPayment",
+        "description" : "This API allows a NPP Participant client (customer or Overlay Service Provider) to request the NPP Participant to return a previously received payment.",
+        "summary" : "Submit Return Payment.",
+        "tags" : [ "REST API" ],
+        "parameters" : [ {
+          "name" : "x-Correlation-Id",
+          "in" : "header",
+          "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers. Can be used for reporting and logging.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Success - Payment return request resource created",
+            "headers" : {
+              "x-Correlation-Id" : {
+                "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentStatusResource"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "Not Acceptable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service Unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Bearer" : [ ]
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaymentReturnResource"
+              }
+            }
+          },
+          "description" : "HTTP request sent by the API Client. ",
+          "required" : true
+        }
+      }
+    },
+    "/paymentEventDetails/{notification_identification}/event" : {
+      "get" : {
+        "operationId" : "getPaymentEventDetails",
+        "description" : "Allows a NPP client (customer or Overlay Service Provider) to fetch from the NPP Participant details of a debit or credit to their account (e.g. under a API call-back arrangement).",
+        "summary" : "Get Payment Event Details.",
+        "tags" : [ "REST API" ],
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "notification_identification",
+          "description" : "Unique notification identification (UUID) as assigned by the NPP Participant (Account Servicer) to unambiguously identify the payment event  notification.",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "x-Correlation-Id",
+          "in" : "header",
+          "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers. Can be used for reporting and logging.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Resource to report the details of an event (debit or credit) applied to a designated account.",
+            "headers" : {
+              "x-Correlation-Id" : {
+                "description" : "Optional correlation ID provided by the data consumer that should be reflected back in the response headers.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentEventDetails"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Method Not Allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "Not Acceptable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service Unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "504" : {
+            "description" : "Gateway Timeout",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorCode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Bearer" : [ ]
+        } ]
+      }
+    }
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/NPP-API/iso-20022_npp_api/1.0.2"
+  } ],
+  "components" : {
+    "securitySchemes" : {
+      "Bearer" : {
+        "type" : "apiKey",
+        "name" : "Authorization",
+        "in" : "header"
+      }
+    },
+    "schemas" : {
+      "ErrorCode" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "object",
+            "example" : {
+              "severity" : "Fatal",
+              "code" : "X001",
+              "text" : "Errortext"
+            },
+            "properties" : {
+              "severity" : {
+                "type" : "string",
+                "enum" : [ "Fatal", "Transient" ]
+              },
+              "code" : {
+                "type" : "string",
+                "enum" : [ "X001", "X002", "X003", "X008", "Sw.gpi.InvalidRequest", "Sw.gpi.MandatoryFieldMissing", "Sw.gpi.MyInstitutionAuthorizationFailure", "Sw.gpi.FromAuthorizationFailure", "Sw.gpi.NoResultFound", "Sw.gpi.UnknownTransaction", "Sw.gpi.InvalidRBACRole", "Sw.gpi.InternalError", "SwAP001", "SwAP002", "SwAP003", "SwAP005", "SwAP006", "SwAP007", "SwAP008", "SwAP010", "SwAP009", "SwAP011", "SwAP099", "SwAP090" ]
+              },
+              "text" : {
+                "type" : "string"
+              }
+            },
+            "required" : [ "severity", "code", "text" ]
+          }
+        },
+        "required" : [ "status" ]
+      },
+      "AccountAliasResource" : {
+        "type" : "object",
+        "description" : "Resource containing all information for a particular Alias Identifier.",
+        "properties" : {
+          "alias_type" : {
+            "description" : "Contains the type of Alias Identifier. E.g. an email, a phone number or an Australian\r\nBusiness Number.",
+            "type" : "string",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "TELI"
+          },
+          "alias_value" : {
+            "description" : "Contains the actual value for the supplied type, so an email address, a phone number etc.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "+61-4437789533"
+          },
+          "alias_name" : {
+            "description" : "Alias name by which a party is known and which is usually used to identify that party.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "Bilbo Baggins"
+          },
+          "account_servicer" : {
+            "description" : "Specifies the account servicer for designated alias.",
+            "type" : "string",
+            "pattern" : "^[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}$",
+            "example" : "WPACAU2SXXX"
+          },
+          "registered" : {
+            "description" : "Specifies the date and time when this alias has been registered.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z|[+-][01]\\d:[0-5]\\d)?$",
+            "example" : "2018-03-21T12:45:08Z"
+          },
+          "status" : {
+            "type" : "string",
+            "example" : "ADDR.API.0405  Alias Identifier in use"
+          }
+        },
+        "required" : [ "alias_type", "alias_value" ],
+        "example" : {
+          "alias_type" : "TELI",
+          "alias_value" : "+61-4123456789",
+          "alias_name" : "SAMWISE GAMGEE",
+          "account_servicer" : "WPACAU2SXXX",
+          "registered" : "2018-03-21T12:45:08Z"
+        }
+      },
+      "PaymentSubmissionResource" : {
+        "type" : "object",
+        "description" : "Resouce to instruct movement of funds from the debtor account to creditor. ",
+        "properties" : {
+          "instruction_identification" : {
+            "description" : "Unique identification as assigned by an instructing party for an instructed party to unambiguously identify the instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "TC121/1471873823"
+          },
+          "end_to_end_identification" : {
+            "description" : "Unique identification assigned by the initiating party to unambiguously identify the transaction. This identification is passed on, unchanged, throughout the entire end-to-end chain.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "BILL00237679"
+          },
+          "creation_date_time" : {
+            "description" : "Date and time at which the request was created.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z|[+-][01]\\d:[0-5]\\d)?$",
+            "example" : "2018-07-17T09:30:47Z"
+          },
+          "initiating_party_name" : {
+            "description" : "Name by which the Initiating Party is known and which is usually used to identify that party.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "HITACHI INTERNATIONAL"
+          },
+          "initiating_party_bic" : {
+            "description" : "Code allocated to a financial or non-financial institution by the ISO 9362 Registration Authority, as described in ISO 9362 \"Banking - Banking telecommunication messages - Business identifier code (BIC)\".",
+            "type" : "string",
+            "pattern" : "^[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}$",
+            "example" : "HITLSGSG"
+          },
+          "instruction_priority" : {
+            "description" : "Indicator of the urgency or order of importance that the instructing party would like the instructed party to apply to the processing of the instruction.",
+            "type" : "string",
+            "enum" : [ "HIGH", "NORM" ],
+            "example" : "NORM"
+          },
+          "service_level" : {
+            "description" : "Specifies a pre-agreed service or level of service between the parties, as a proprietary code.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "npp.clear.01-sct.01"
+          },
+          "local_instrument" : {
+            "description" : "Specifies the local instrument, as published in an external local instrument code list.",
+            "type" : "string",
+            "example" : "TRF"
+          },
+          "category_purpose" : {
+            "description" : "Category purpose, as published in an external category purpose code list.",
+            "type" : "string",
+            "example" : "SSBE"
+          },
+          "requested_execution_date" : {
+            "description" : "Specified date.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)$",
+            "example" : "2018-09-17"
+          },
+          "debtor_name" : {
+            "description" : "Name by which a party is known and which is usually used to identify that party.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "BILBO BAGGINS"
+          },
+          "debtor_alias_type" : {
+            "description" : "Contains the type of Alias Identifier. E.g. an email, a phone number or an Australian Business\r\nNumber.",
+            "type" : "string",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "TELI"
+          },
+          "debtor_alias_value" : {
+            "description" : "Contains the actual value for the supplied type, so an email address, a phone number etc.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "+61-4235678654"
+          },
+          "debtor_account_identification" : {
+            "description" : "Unique and unambiguous identification for the account between the account owner and the\r\naccount servicer.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 34,
+            "example" : "833421234567"
+          },
+          "debtor_account_type" : {
+            "description" : "Name of the account identification identification scheme, in a coded form as published in an external list.",
+            "type" : "string",
+            "enum" : [ "BBAN", "AIIN" ],
+            "example" : "BBAN"
+          },
+          "debtor_agent_bic" : {
+            "description" : "Code allocated to a financial or non-financial institution by the ISO 9362 Registration Authority, as described in ISO 9362 \"Banking - Banking telecommunication messages - Business identifier code (BIC)\".",
+            "type" : "string",
+            "pattern" : "^[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}$",
+            "example" : "NATAAU33XXX"
+          },
+          "instructed_amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          },
+          "creditor_name" : {
+            "description" : "Name by which a party is known and which is usually used to identify that party.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "SAMWISE GAMGEE"
+          },
+          "creditor_alias_type" : {
+            "description" : "Contains the type of Alias Identifier. E.g. an email, a phone number or an Australian Business\r\nNumber.",
+            "type" : "string",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "TELI"
+          },
+          "creditor_alias_value" : {
+            "description" : "Contains the actual value for the supplied type, so an email address, a phone number etc.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "+61-4123456789"
+          },
+          "creditor_account_identification" : {
+            "description" : "Unique and unambiguous identification for the account between the account owner and the\r\naccount servicer.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 34,
+            "example" : "62016987654321"
+          },
+          "creditor_account_type" : {
+            "description" : "Name of the account identification identification scheme, in a coded form as published in an external list.",
+            "type" : "string",
+            "enum" : [ "BBAN", "AIIN" ],
+            "example" : "BBAN"
+          },
+          "creditor_agent_bic" : {
+            "description" : "Code allocated to a financial or non-financial institution by the ISO 9362 Registration Authority, as described in ISO 9362 \"Banking - Banking telecommunication messages - Business identifier code (BIC)\".",
+            "type" : "string",
+            "pattern" : "^[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}$",
+            "example" : "ANZBAU3MXXX"
+          },
+          "remittance_referred_document_type" : {
+            "description" : "Specifies the type of referred document.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "CINV"
+          },
+          "remittance_referred_document_number" : {
+            "description" : "Unique and unambiguous identification of the referred document.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "INV-12345678"
+          },
+          "remittance_referred_related_date" : {
+            "description" : "Date associated with the referred document.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)$",
+            "example" : "2018-08-23"
+          },
+          "remittance_information_unstructured" : {
+            "type" : "array",
+            "maxItems" : 2,
+            "description" : "Information supplied to enable the matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form.",
+            "items" : {
+              "type" : "string",
+              "minLength" : 1,
+              "maxLength" : 140
+            },
+            "example" : "FIRST LINE SECOND LINE"
+          }
+        },
+        "required" : [ "instruction_identification", "end_to_end_identification", "creation_date_time", "initiating_party_name", "requested_execution_date", "debtor_name", "instructed_amount", "creditor_name", "creditor_agent_bic" ],
+        "example" : {
+          "service_level" : "npp.clear.01-sct.01",
+          "instruction_identification" : "TC121/1471873823",
+          "end_to_end_identification" : "NOTPROVIDED",
+          "creation_date_time" : "2018-09-17T09:45:47Z",
+          "initiating_party_name" : "HITACHI INTERNATIONAL",
+          "initiating_party_bic" : "HITLSGSG",
+          "instruction_priority" : "HIGH",
+          "local_instrument" : "TRF",
+          "category_purpose" : "SSBE",
+          "requested_execution_date" : "2018-09-17",
+          "debtor_name" : "BILBO BAGGINS",
+          "debtor_account_identification" : "833421234567",
+          "debtor_account_type" : "BBAN",
+          "debtor_agent_bic" : "NATAAU33XXX",
+          "instructed_amount" : {
+            "currency" : "AUD",
+            "amount" : "562.89"
+          },
+          "creditor_name" : "SAMWISE GAMGEE",
+          "creditor_alias_type" : "TELI",
+          "creditor_alias_value" : "+61-4123456789",
+          "creditor_account_identification" : "62016987654321",
+          "creditor_account_type" : "BBAN",
+          "creditor_agent_bic" : "ANZBAU3MXXX",
+          "remiitance_referred_document_type" : "CINV",
+          "remittance_referred_document_number" : "INV-12345678",
+          "remittance_referred_related_date" : "2018-08-23",
+          "remittance_information_unstructured" : [ "FIRST LINE", "SECOND LINE" ]
+        }
+      },
+      "PaymentCancellationRequest" : {
+        "type" : "object",
+        "description" : "Request the cancellation of an original payment instruction by the debtor.",
+        "additionalProperties" : false,
+        "properties" : {
+          "creation_date_time" : {
+            "description" : "Date and time at which the request was created.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z|[+-][01]\\d:[0-5]\\d)?$",
+            "example" : "2018-03-21T12:45:08Z"
+          },
+          "original_instruction_identification" : {
+            "description" : "Unique identification, as assigned by the original instructing party for the original instructed party, to unambiguously identify the original instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "TC121/1471873823"
+          },
+          "original_end_to_end_identification" : {
+            "description" : "Unique identification, as assigned by the original initiating party, to unambiguously identify the original transaction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "BILL00237679"
+          },
+          "transaction_identification" : {
+            "description" : "Unique identification, as assigned by the first instructing agent, to unambiguously identify the transaction that is passed on, unchanged, throughout the entire interbank chain.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "WPACAU2SXXXN20190417010000000897660"
+          },
+          "cancellation_reason_code" : {
+            "type" : "string",
+            "description" : "Reason for the cancellation request, in a coded form.",
+            "example" : "DUPL"
+          },
+          "cancellation_reason_narration" : {
+            "description" : "Reason for the cancellation request, in a proprietary form.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "DuplicatePayment"
+          },
+          "original_instructed_amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          },
+          "original_debtor_name" : {
+            "description" : "Name of Debtor as provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "BILBO BAGGINS"
+          },
+          "debtor_alias_type" : {
+            "type" : "string",
+            "description" : "Specifies the type of alias identifier, in a coded form as published in an external list. The same value may have been provided in the original payment instruction.",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "TELI"
+          },
+          "debtor_alias_value" : {
+            "description" : "Specifies the value of the Debtor alias identifier. The same value may have been provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "+61-4235678654"
+          },
+          "debtor_account_identification" : {
+            "description" : "Specifies the identification of the Creditor account. The same value may have been provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 34,
+            "example" : "833421234567"
+          },
+          "debtor_account_type" : {
+            "type" : "string",
+            "description" : "Name of the account identification identification scheme, in a coded form as published in an external list. The same value may have been provided in the original payment instruction.",
+            "enum" : [ "BBAN", "AIIN" ],
+            "example" : "BBAN"
+          },
+          "original_creditor_name" : {
+            "description" : "Name of Creditor as provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "SAMWISE GAMGEE"
+          },
+          "creditor_alias_type" : {
+            "type" : "string",
+            "description" : "Specifies the type of alias identifier, in a coded form as published in an external list. The same value may have been provided in the original payment instruction.",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "TELI"
+          },
+          "creditor_alias_value" : {
+            "description" : "Specifies the value of the Creditor alias identifier. The same value may have been provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "+61-4123456789"
+          },
+          "creditor_account_identification" : {
+            "description" : "Specifies the identification of the Creditor account. The same value may have been provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 34,
+            "example" : "62016987654321"
+          },
+          "creditor_account_type" : {
+            "type" : "string",
+            "description" : "Name of the account identification identification scheme, in a coded form as published in an external list. The same value may have been provided in the original payment instruction.",
+            "enum" : [ "BBAN", "AIIN" ],
+            "example" : "BBAN"
+          }
+        },
+        "required" : [ "creation_date_time", "original_instruction_identification", "original_end_to_end_identification", "cancellation_reason_code", "original_debtor_name", "original_creditor_name" ]
+      },
+      "PaymentCancellationResponse" : {
+        "type" : "object",
+        "description" : "Response to report the status of the request to cancel a customer payment.",
+        "additionalProperties" : false,
+        "properties" : {
+          "acceptance_date_time" : {
+            "description" : "Point in time when the cancellation request was accepted by Debtor Agent.",
+            "example" : "2019-04-23"
+          },
+          "case_identification" : {
+            "description" : "Uniquely identifies the case as assigned by the Debtor Agent.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "Case 12345678"
+          }
+        },
+        "required" : [ "acceptance_date_time" ]
+      },
+      "PaymentReturnResource" : {
+        "type" : "object",
+        "description" : "Request the return of an original payment instruction by the creditor.",
+        "additionalProperties" : false,
+        "properties" : {
+          "creation_date_time" : {
+            "description" : "Date and time at which the request was created.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z|[+-][01]\\d:[0-5]\\d)?$",
+            "example" : "2019-04-17T09:30:47Z"
+          },
+          "case_identification" : {
+            "description" : "Uniquely identifies the case.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "CTBAAUSNXXXC20170104P000007745"
+          },
+          "original_instruction_identification" : {
+            "description" : "Unique identification, as assigned by the original instructing party for the original instructed party, to unambiguously identify the original instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "TC121/1471873823"
+          },
+          "original_end_to_end_identification" : {
+            "description" : "Unique identification, as assigned by the original initiating party, to unambiguously identify the original transaction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "BILL00237679"
+          },
+          "service_level" : {
+            "description" : "Specifies a pre-agreed service or level of service between the parties, as a proprietary code.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "npp.clear.01-sct.02"
+          },
+          "transaction_identification" : {
+            "description" : "Unique identification, as assigned by the first instructing agent, to unambiguously identify the transaction that is passed on, unchanged, throughout the entire interbank chain.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "WPACAU2SXXXN20190417010000000897660"
+          },
+          "return_reason_code" : {
+            "type" : "string",
+            "description" : "Reason for the return request, in a coded form.",
+            "example" : "BE08"
+          },
+          "return_reason_narration" : {
+            "description" : "Reason for the return request, in a proprietary form.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "Returned as a result of a bank error."
+          },
+          "original_instructed_amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          },
+          "original_debtor_name" : {
+            "description" : "Name of Debtor as provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "BILBO BAGGINS"
+          },
+          "original_creditor_name" : {
+            "description" : "Name of Creditor as provided in the original payment instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "DORA POWRIE BAGGINS"
+          }
+        },
+        "required" : [ "creation_date_time", "original_instruction_identification", "original_end_to_end_identification", "return_reason_code", "original_debtor_name", "original_creditor_name" ]
+      },
+      "PaymentEventDetails" : {
+        "type" : "object",
+        "description" : "This API allows a  NPP client (customer or Overlay Service Provider) to fetch from the NPP Participant details of a debit or credit to their account (e.g. under a API call-back arrangement).",
+        "additionalProperties" : false,
+        "properties" : {
+          "request" : {
+            "$ref" : "#/components/schemas/PaymentEventRequestResource"
+          },
+          "response" : {
+            "$ref" : "#/components/schemas/PaymentEventResponseResource"
+          }
+        }
+      },
+      "PaymentEventRequestResource" : {
+        "type" : "object",
+        "description" : "Request sent by NPP Participant (account servicer) to client detailing the nature of the event and identifying the affected resource, including an access credential under a call-back arrangement. ",
+        "additionalProperties" : false,
+        "properties" : {
+          "notification_identification" : {
+            "description" : "Unique notification identification as assigned by the NPP Participant (Account Servicer) to unambiguously identify the payment event  notification.",
+            "type" : "string",
+            "minLength" : 36,
+            "maxLength" : 36,
+            "pattern" : "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$",
+            "example" : "43ba8cc0-67ff-490f-abe5-5bb640bc3681"
+          }
+        },
+        "required" : [ "notification_identification" ]
+      },
+      "PaymentEventResponseResource" : {
+        "type" : "object",
+        "description" : "Response from NPP Participant (account servicer) to client with the details of a designated payment event (debit or credit) to their account. This is the consequence of having received a notification from the NPP Participant under a call-back arrangement. ",
+        "additionalProperties" : false,
+        "properties" : {
+          "original_transaction_identification" : {
+            "description" : "Unique identification, as assigned by the first instructing agent, to unambiguously identify the transaction that is passed on, unchanged, throughout the entire interbank chain.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "WPACAU2SXXXN20190417010000000897660"
+          },
+          "original_end_to_end_identification" : {
+            "description" : "Unique identification, as assigned by the original initiating party, to unambiguously identify the original transaction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "BILL00237679"
+          },
+          "original_instruction_identification" : {
+            "description" : "Unique identification, as assigned by the original instructing party for the original instructed party, to unambiguously identify the original instruction.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "TC121/1471873823"
+          },
+          "original_instructed_amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          },
+          "service_level" : {
+            "description" : "Specifies a pre-agreed service or level of service between the parties, as a proprietary code.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "npp.clear.01-sct.02"
+          },
+          "amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          },
+          "credit_debit_indicator" : {
+            "description" : "Indicates whether the entry is a credit or a debit entry.",
+            "type" : "string",
+            "enum" : [ "CRDT", "DBIT" ],
+            "example" : "CRDT"
+          },
+          "status" : {
+            "description" : "Status of an entry on the books of the account servicer.",
+            "type" : "string",
+            "enum" : [ "BOOK", "PDNG", "INFO" ],
+            "example" : "CRDT"
+          },
+          "booking_date_time" : {
+            "description" : "Date and time when an entry is posted to an account on the account servicer's books.\r\nUsage: Booking date is the expected booking date, unless the status is booked, in which case it is the actual booking date.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z)$",
+            "example" : "2019-04-17T09:45:47.000Z"
+          },
+          "value_date_time" : {
+            "description" : "Date and time at which assets become available to the account owner in case of a credit entry, or cease to be available to the account owner in case of a debit entry.\r\nUsage: If entry status is pending and value date is present, then the value date refers to an expected/requested value date.\r\nFor entries subject to availability/float and for which availability information is provided, the value date must not be used. In this case the availability component identifies the number of availability days.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z)$",
+            "example" : "2019-04-17T09:45:47.000Z"
+          },
+          "charges" : {
+            "type" : "array",
+            "description" : "Provides information on the charges, pre-advised or included in the entry amount.\r\n\r\nUsage: This component is used on entry level in case of batch or aggregate bookings.\r\n",
+            "example" : "amount:75.00, credit_debit_indicator:CRDT, charge_included_indicator:false, charge_type:COMM, rate:2.5, bearer:SLEV, tax_identification:TX1234556, tax_rate:10.0, tax_amount:7.50 amount:40.00, credit_debit_indicator:CRDT, charge_included_indicator:true, charge_type:COMM, rate:1.5, bearer:SLEV",
+            "items" : {
+              "$ref" : "#/components/schemas/ChargesRecord"
+            }
+          },
+          "bank_transaction_code" : {
+            "description" : "Identifies the type of the bank transaction entry.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "BANK TRANSACTION CODE"
+          },
+          "return_reason_code" : {
+            "description" : "Reason for the return, as published in an external reason code list.",
+            "type" : "string",
+            "example" : "AC04"
+          },
+          "return_additional_information" : {
+            "type" : "array",
+            "maxItems" : 3,
+            "description" : "Further details on the return reason.",
+            "example" : "Closed Account Number, Account number specified has been closed on the bank of account's books",
+            "items" : {
+              "type" : "string",
+              "minLength" : 1,
+              "maxLength" : 105,
+              "example" : "Closed Account Number Account number specified has been closed on the bank of account's books"
+            }
+          },
+          "account_servicer_reference" : {
+            "description" : "Unique reference as assigned by the account servicing institution to unambiguously identify the entry.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "ABC-123456789"
+          },
+          "debtor_name" : {
+            "description" : "Name by which a party is known and which is usually used to identify that party.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "BILBO BAGGINS"
+          },
+          "debtor_alias_type" : {
+            "description" : "Contains the type of Alias Identifier. E.g. an email, a phone number or an Australian Business\r\nNumber.",
+            "type" : "string",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "EMAL"
+          },
+          "debtor_alias_value" : {
+            "description" : "Contains the actual value for the supplied type, so an email address, a phone number etc.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "bilbo.baggins@gmail.com"
+          },
+          "debtor_account_identification" : {
+            "description" : "Unique and unambiguous identification for the account between the account owner and the account servicer.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 34,
+            "example" : "833421234567"
+          },
+          "debtor_account_type" : {
+            "description" : "Name of the account identification identification scheme, in a coded form as published in an external list.",
+            "type" : "string",
+            "enum" : [ "BBAN", "AIIN" ],
+            "example" : "BBAN"
+          },
+          "debtor_agent_bic" : {
+            "description" : "Code allocated to a financial or non-financial institution by the ISO 9362 Registration Authority, as described in ISO 9362 \"Banking - Banking telecommunication messages - Business identifier code (BIC)\".",
+            "type" : "string",
+            "example" : "NATAAU33XXX"
+          },
+          "creditor_agent_bic" : {
+            "description" : "Code allocated to a financial or non-financial institution by the ISO 9362 Registration Authority, as described in ISO 9362 \"Banking - Banking telecommunication messages - Business identifier code (BIC)\".",
+            "type" : "string",
+            "example" : "NATAAU33XXX"
+          },
+          "creditor_name" : {
+            "description" : "Name by which a party is known and which is usually used to identify that party.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 140,
+            "example" : "BILBO BAGGINS"
+          },
+          "creditor_alias_type" : {
+            "description" : "Contains the type of Alias Identifier. E.g. an email, a phone number or an Australian Business Number.",
+            "type" : "string",
+            "enum" : [ "TELI", "EMAL", "AUBN", "ORGN" ],
+            "example" : "EMAL"
+          },
+          "creditor_alias_value" : {
+            "description" : "Contains the actual value for the supplied type, so an email address, a phone number etc.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "+61-4123456789"
+          },
+          "creditor_account_identification" : {
+            "description" : "Unique and unambiguous identification for the account between the account owner and the\r\naccount servicer.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 34,
+            "example" : "62016987654321"
+          },
+          "creditor_account_type" : {
+            "description" : "Name of the account identification identification scheme, in a coded form as published in an external list.",
+            "enum" : [ "BBAN", "AIIN" ],
+            "example" : "BBAN"
+          },
+          "remittance_referred_document_type" : {
+            "description" : "Specifies the type of referred document.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "CINV"
+          },
+          "remittance_referred_document_number" : {
+            "description" : "Unique and unambiguous identification of the referred document.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "INV-12345678"
+          },
+          "remittance_referred_related_date" : {
+            "description" : "Date associated with the referred document.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)$",
+            "example" : "2019-04-23"
+          },
+          "remittance_information_unstructured" : {
+            "type" : "array",
+            "maxItems" : 2,
+            "description" : "Information supplied to enable the matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form.",
+            "items" : {
+              "type" : "string",
+              "minLength" : 1,
+              "maxLength" : 140
+            },
+            "example" : "FIRST LINE SECOND LINE"
+          }
+        },
+        "required" : [ "original_transaction_identification", "original_end_to_end_identification", "amount", "credit_debit_indicator", "status", "debtor_name", "creditor_name" ]
+      },
+      "ChargesRecord" : {
+        "type" : "object",
+        "description" : "Provides further individual record details on the charges related to the payment transaction.",
+        "additionalProperties" : false,
+        "properties" : {
+          "amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          },
+          "credit_debit_indicator" : {
+            "type" : "string",
+            "enum" : [ "CRDT", "DBIT" ],
+            "example" : "CRDT"
+          },
+          "charge_included_indicator" : {
+            "description" : "Indicates whether the charge should be included in the amount or is added as pre-advice.",
+            "type" : "boolean",
+            "example" : false
+          },
+          "charge_type" : {
+            "description" : "Specifies the type of charge.",
+            "type" : "string",
+            "example" : "COMM"
+          },
+          "rate" : {
+            "description" : "Rate used to calculate the amount of the charge or fee.",
+            "type" : "string",
+            "maxLength" : 12,
+            "example" : "4.5"
+          },
+          "bearer" : {
+            "type" : "string",
+            "description" : "Specifies which party(ies) will pay charges due for processing of the instruction.",
+            "enum" : [ "DEBT", "CRED", "SHAR", "SLEV" ],
+            "example" : "SLEV"
+          },
+          "tax_identification" : {
+            "description" : "Unique reference to unambiguously identify the nature of the tax levied, such as Value Added Tax (VAT).",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "GST45123456"
+          },
+          "tax_rate" : {
+            "description" : "Rate used to calculate the tax.",
+            "type" : "string",
+            "maxLength" : 12,
+            "example" : "10.5"
+          },
+          "tax_amount" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyAndAmount"
+          }
+        },
+        "required" : [ "amount" ]
+      },
+      "ActiveOrHistoricCurrencyAndAmount" : {
+        "type" : "object",
+        "properties" : {
+          "currency" : {
+            "$ref" : "#/components/schemas/ActiveOrHistoricCurrencyCode"
+          },
+          "amount" : {
+            "type" : "string",
+            "maxLength" : 19,
+            "description" : "A number of monetary units specified in an active or a historic currency where the unit of currency is explicit and compliant with ISO 4217.",
+            "example" : 562.89
+          }
+        },
+        "required" : [ "currency", "amount" ]
+      },
+      "ActiveOrHistoricCurrencyCode" : {
+        "type" : "string",
+        "pattern" : "^[A-Z]{3,3}$",
+        "description" : "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 \"Codes for the representation of currencies and funds\".",
+        "example" : "AUD"
+      },
+      "PaymentStatusResource" : {
+        "type" : "object",
+        "description" : "Resource to report the status of a customer credit transfer.",
+        "properties" : {
+          "transaction_status" : {
+            "description" : "Specifies the status of a transaction, in a coded form.",
+            "type" : "string",
+            "enum" : [ "ACCP", "ACSC", "RJCT" ],
+            "example" : "ACCP"
+          },
+          "transaction_status_reason_code" : {
+            "description" : "Reason for the status, as published in an external reason code list.",
+            "type" : "string",
+            "example" : "AC01"
+          },
+          "transaction_status_description" : {
+            "description" : "Further details on the status reason. ",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 105,
+            "example" : "Incorrect Account Number"
+          },
+          "transaction_identification" : {
+            "description" : "Unique identification, as assigned by the first instructing agent, to unambiguously identify the transaction that is passed on, unchanged, throughout the entire interbank chain.",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 35,
+            "example" : "NATAAU33XXXN201803220000008AM000010"
+          },
+          "acceptance_datetime" : {
+            "description" : "Point in time when the payment order from the initiating party meets the processing conditions of the account servicing agent. This means that the account servicing agent has received the payment order and has applied checks such as authorisation, availability of funds.",
+            "type" : "string",
+            "pattern" : "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.[0-9]+)?(?:Z|[+-][01]\\d:[0-5]\\d)?$",
+            "example" : "2018-03-22T12:45:08Z"
+          },
+          "service_access_token" : {
+            "description" : "Token generated by Financial Institution to provide time limited attestation of customer authentication.  ",
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 2048,
+            "example" : "3F2504E0-4F89-11D3-9A0C-0305E82C3301"
+          }
+        },
+        "required" : [ "transaction_status" ],
+        "example" : {
+          "transaction_status" : "RJCT",
+          "transaction_status_reason_code" : "AC01",
+          "transaction_status_description" : "Incorrect Account Number",
+          "service_access_token" : "3F2504E0-4F89-11D3-9A0C-0305E82C3301"
+        }
+      }
+    }
+  }
+}

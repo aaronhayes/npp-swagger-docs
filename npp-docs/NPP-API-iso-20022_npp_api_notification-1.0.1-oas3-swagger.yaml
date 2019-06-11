@@ -1,0 +1,272 @@
+openapi: 3.0.0
+info:
+  description: PaymentEventNotification (camt.a12.001.01)
+  contact:
+    name: NPP Australia
+    url: 'https://www.nppa.com.au'
+    email: operations@nppa.com.au
+  version: "1.0.1-oas3"
+  title: ISO 20022 NPP API Notification
+  license:
+    name: MIT Licence
+    url: 'https://opensource.org/licenses/MIT'
+tags:
+  - name: REST API
+    description: NPP
+paths:
+  /paymentEventNotification/submit:
+    post:
+      operationId: submitNotification
+      description: >-
+        This API allows a NPP Participant to notify (e.g. under a API call-back
+        arrangement) their client (customer or Overlay Service Provider) that a
+        payment event has occurred. 
+      summary: Submit Notification.
+      tags:
+        - REST API
+      parameters:
+        - name: x-Correlation-Id
+          in: header
+          description: >-
+            Optional correlation ID provided by the data consumer that should be
+            reflected back in the response headers. Can be used for reporting
+            and logging.
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Success - Payment request resource created
+          headers:
+            x-Correlation-Id:
+              description: >-
+                Optional correlation ID provided by the data consumer that
+                should be reflected back in the response headers.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentEventNotificationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCode'
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentEventNotificationRequest'
+        description: >-
+          Resource to instruct movement of funds from the debtor account to
+          creditor. 
+        required: true
+servers:
+  - url: >-
+      https://virtserver.swaggerhub.com/NPP-API/iso-20022_npp_api-notification/1.0.1
+components:
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+  schemas:
+    ErrorCode:
+      type: object
+      properties:
+        status:
+          type: object
+          example:
+            severity: Fatal
+            code: X001
+            text: Errortext
+          properties:
+            severity:
+              type: string
+              enum:
+                - Fatal
+                - Transient
+            code:
+              type: string
+              enum:
+                - X001
+                - X002
+                - X003
+                - X008
+                - Sw.gpi.InvalidRequest
+                - Sw.gpi.MandatoryFieldMissing
+                - Sw.gpi.MyInstitutionAuthorizationFailure
+                - Sw.gpi.FromAuthorizationFailure
+                - Sw.gpi.NoResultFound
+                - Sw.gpi.UnknownTransaction
+                - Sw.gpi.InvalidRBACRole
+                - Sw.gpi.InternalError
+                - SwAP001
+                - SwAP002
+                - SwAP003
+                - SwAP005
+                - SwAP006
+                - SwAP007
+                - SwAP008
+                - SwAP010
+                - SwAP009
+                - SwAP011
+                - SwAP099
+                - SwAP090
+            text:
+              type: string
+          required:
+            - severity
+            - code
+            - text
+      required:
+        - status
+    PaymentEventNotificationRequest:
+      type: object
+      description: Request to notify payment event.
+      additionalProperties: false
+      properties:
+        notification_identification:
+          description: >-
+            Unique notification identification as assigned by the NPP
+            Participant to unambiguously identify the payment event 
+            notification.
+          type: string
+          minLength: 36
+          maxLength: 36
+          pattern: >-
+            ^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$
+          example: 43ba8cc0-67ff-490f-abe5-5bb640bc3681
+        creation_date_time:
+          description: Date and time at which the request was created.
+          type: string
+          pattern: >-
+            ^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.[0-9]+)?(?:Z|[+-][01]\d:[0-5]\d)?$
+          example: '2018-07-17T09:30:47Z'
+        notification_issuer:
+          description: URI of Notification Issuer.
+          type: string
+          minLength: 1
+          maxLength: 2048
+          example: >-
+            https://www.anz.com.au/ways-to-bank/internet-banking/notification-service/
+        event_date_time:
+          description: Point in time when the event occurred.
+          type: string
+          pattern: >-
+            ^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.[0-9]+)?(?:Z|[+-][01]\d:[0-5]\d)?$
+          example: '2018-07-17T06:30:37Z'
+        service_level:
+          description: >-
+            Specifies a pre-agreed service or level of service between the
+            parties, as a proprietary code.
+          type: string
+          minLength: 1
+          maxLength: 35
+          example: npp.clear.01-sct.02
+        notification_subject_identification:
+          description: >-
+            Identification of the subject that the notification is related to
+            (e.g transaction identification).
+          type: string
+          minLength: 1
+          maxLength: 128
+          example: WPACAU2SXXXN20190417010000000897660
+        notification_event_type_code:
+          description: >-
+            Type of notification event, as published in an external reason code
+            list.
+          type: string
+          example: DBIT
+        notification_audience:
+          description: Intended audience of notification.
+          type: string
+          minLength: 1
+          maxLength: 128
+          example: Credit Control
+      required:
+        - notification_identification
+        - creation_date_time
+        - notification_issuer
+        - event_date_time
+        - notification_subject_identification
+    PaymentEventNotificationResponse:
+      type: object
+      description: Response to notification of a payment event.
+      additionalProperties: false
+      properties:
+        acceptance_date_time:
+          description: Point in time when the notification request was accepted.
+          type: string
+          pattern: >-
+            ^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.[0-9]+)?(?:Z|[+-][01]\d:[0-5]\d)?$        
+          example: '2018-07-17T06:30:37Z'
